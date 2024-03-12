@@ -18,12 +18,14 @@ public class Cell : MonoBehaviour, IPointerClickHandler
     public bool HasBomb;
     [NonSerialized]
     public int NearbyBombAmount = -1;
-    
-    private int cellId;
+    [NonSerialized]
+    public int CellId;
+    [NonSerialized]
+    public CellState CurrentState;
 
     public void Init(int id)
     {
-        cellId = id;
+        CellId = id;
         SetState(CellState.Closed);
     }
 
@@ -42,15 +44,13 @@ public class Cell : MonoBehaviour, IPointerClickHandler
                 bgImage.color = closedColor;
                 break;
         }
-        
-        bgImage.color = openedColor;
-        nearbyBombCounter.gameObject.SetActive(true);
-        nearbyBombCounter.text = $"{NearbyBombAmount}";
+
+        CurrentState = state;
     }
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        MineSweeperField.OnCellClick.Invoke(cellId);
+        MineSweeperField.OnCellClick.Invoke(this);
     }
     
     public enum CellState
