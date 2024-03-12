@@ -9,6 +9,7 @@ public class GameplayMenu : BasePanel
     [SerializeField] private MainMenu mainMenu;
     [SerializeField] private MineSweeperField mineSweeperField;
     [SerializeField] private Button backButton;
+    [SerializeField] private GameOverScreen gameOverScreen;
 
     private void OnEnable()
     {
@@ -30,5 +31,21 @@ public class GameplayMenu : BasePanel
     {
         Hide();
         mainMenu.Show();
+    }
+
+    public void OnGameOver()
+    {
+        gameOverScreen.Show();
+    }
+
+    public void OnGameOverBack()
+    {
+        Hide();
+        mainMenu.Show();
+    }
+
+    public void OnGameOverRestart()
+    {
+        mineSweeperField.Restart();
     }
 }

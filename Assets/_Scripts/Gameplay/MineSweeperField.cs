@@ -11,6 +11,7 @@ public class MineSweeperField : MonoBehaviour
 	[Header("Components")]
 	[SerializeField] private Cell cellPrefab;
 	[SerializeField] private GridLayoutGroup gridLayoutGroup;
+	[SerializeField] private GameOverScreen gameOverScreen;
 
 	private GameDifficulty gameDifficulty;
 	private Cell[,] cells;
@@ -28,6 +29,8 @@ public class MineSweeperField : MonoBehaviour
 	{
 		OnCellClick.RemoveListener(OnAnyCellClick);
 	}
+
+	public void Restart() => GenerateField(gameDifficulty);
 
 	public void GenerateField(GameDifficulty difficulty)
 	{
@@ -104,7 +107,10 @@ public class MineSweeperField : MonoBehaviour
 			InitializeCells(clickedCell.CellId);
 
 		if (clickedCell.HasBomb)
-			return; // TODO: Add GameOver
+		{
+			gameOverScreen.Show();
+			return;
+		}
 
 		OpenCells(clickedCell);
 	}
