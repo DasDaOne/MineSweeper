@@ -69,13 +69,14 @@ public class MineSweeperField : MonoBehaviour
 
         for (int i = 0; i < gameDifficulty.BombAmount(); i++)
         {
-            CellFromOneDimId(indexes[i]).hasBomb = true;
+            CellFromOneDimId(indexes[i]).HasBomb = true;
         }
 
         for (int i = 0; i < cells.Length; i++)
         {
-            if(!CellFromOneDimId(i).hasBomb)
-                CellFromOneDimId(i).nearbyBombAmount = GetNearbyBombsAmount(i);
+            if(!CellFromOneDimId(i).HasBomb)
+                CellFromOneDimId(i).NearbyBombAmount = 
+                    GetNeighbours(i / gameDifficulty.FieldSize(), i % gameDifficulty.FieldSize()).Count(x => x.HasBomb);
         }
     }
     
@@ -83,41 +84,36 @@ public class MineSweeperField : MonoBehaviour
     {
         if(!areCellsInitialized)
             InitializeCells(cellId);
-        
-        
+
     }
-
-    private int GetNearbyBombsAmount(int cellId)
+    
+    private List<Cell> GetNeighbours(int row, int col)
     {
-        int bombAmount = 0;
+        List<Cell> neighbourCells = new List<Cell>();
 
-        int row = cellId / gameDifficulty.FieldSize();
-        int col = cellId % gameDifficulty.FieldSize();
+        if(row > 0)
+            neighbourCells.AddRange(GetRowNeighbours(row - 1, col));
+        if(row < gameDifficulty.FieldSize() - 1)
+            neighbourCells.AddRange(GetRowNeighbours(row + 1, col));
+        if(col > 0)
+            neighbourCells.Add(cells[row, col - 1]);
+        if(col < gameDifficulty.FieldSize() - 1)
+            neighbourCells.Add(cells[row, col + 1]);
 
-        // TOP
-        if (row > 0)
-            bombAmount += GetRowNeighbours(row - 1, col);
-
-        // BOTTOM
-        if (row < gameDifficulty.FieldSize() - 1)
-            bombAmount += GetRowNeighbours(row + 1, col);
-
-        // RIGHT
-        if (col < gameDifficulty.FieldSize() - 1)
-            bombAmount += cells[row, col + 1].hasBomb ? 1 : 0;
-        
-        // LEFT
-        if (col > 0)
-            bombAmount += cells[row, col - 1].hasBomb ? 1 : 0;
-
-        return bombAmount;
+        return neighbourCells;
     }
-
-    private int GetRowNeighbours(int row, int col)
+    
+    private List<Cell> GetRowNeighbours(int row, int col)
     {
-        return (col > 0 && cells[row, col - 1].hasBomb ? 1 : 0) +
-               (cells[row, col].hasBomb ? 1 : 0) +
-               (col < gameDifficulty.FieldSize() - 1 && cells[row, col + 1].hasBomb ? 1 : 0);
+        List<Cell> neighbourCells = new List<Cell>();
+
+        if(col > 0)
+            neighbourCells.Add(cells[row, col -1]);
+        if(col < gameDifficulty.FieldSize() - 1)
+            neighbourCells.Add(cells[row, col + 1]);
+        neighbourCells.Add(cells[row, col]);
+
+        return neighbourCells;
     }
 
     private Cell CellFromOneDimId(int id)

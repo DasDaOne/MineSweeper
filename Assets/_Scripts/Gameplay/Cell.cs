@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -13,10 +14,10 @@ public class Cell : MonoBehaviour, IPointerClickHandler
     [SerializeField] private Color closedColor;
     [SerializeField] private Color openedColor;
     
-    [HideInInspector]
-    public bool hasBomb;
-    [HideInInspector]
-    public int nearbyBombAmount = -1;
+    [NonSerialized]
+    public bool HasBomb;
+    [NonSerialized]
+    public int NearbyBombAmount = -1;
     
     private int cellId;
 
@@ -35,18 +36,16 @@ public class Cell : MonoBehaviour, IPointerClickHandler
             case CellState.Opened:
                 bgImage.color = openedColor;
                 nearbyBombCounter.gameObject.SetActive(true);
-                nearbyBombCounter.text = $"{nearbyBombAmount}";
+                nearbyBombCounter.text = $"{NearbyBombAmount}";
                 break;
             case CellState.Closed:
                 bgImage.color = closedColor;
                 break;
         }
         
-        
-        
         bgImage.color = openedColor;
         nearbyBombCounter.gameObject.SetActive(true);
-        nearbyBombCounter.text = $"{nearbyBombAmount}";
+        nearbyBombCounter.text = $"{NearbyBombAmount}";
     }
 
     public void OnPointerClick(PointerEventData eventData)
